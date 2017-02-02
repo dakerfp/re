@@ -7,6 +7,9 @@ This module is inspired on a similar project for [[javascript|https://github.com
 Example:
 
 ```golang
+import (
+	. "github.com/dakerfp/re"
+)
 re := Regex(
 	Group("dividend", Digits()),
 	Then("/"),
