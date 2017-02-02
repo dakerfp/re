@@ -132,6 +132,31 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
+			Regex(Or(Digit(), Alpha())),
+			regexp.MustCompile("[A-Za-z]|[0-9]"),
+			[]testcase{
+				{"", false},
+				{"b", true},
+				{"1", true},
+				{"z", true},
+				{"-", false},
+				{" ", false},
+				{"X", true},
+				{"A", true},
+			},
+		},
+		{
+			Regex(Or(Then("aaa"), Then("bbb"))),
+			regexp.MustCompile("(aaa)|(bbb)"),
+			[]testcase{
+				{"", false},
+				{"aaa", true},
+				{"bbb", true},
+				{"z", false},
+				{"AAA", false},
+			},
+		},
+		{
 			Regex(
 				Group("dividend", Digits()),
 				Then("/"),
