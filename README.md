@@ -6,7 +6,7 @@ This module is inspired on a similar project for [[javascript|https://github.com
 
 Example:
 
-```
+```golang
 re := Regex(
 	Group("dividend", Digits()),
 	Then("/"),
