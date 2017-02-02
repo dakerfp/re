@@ -19,5 +19,5 @@ re := Regex(
 
 m = re.FindSubmatch("4/3")
 fmt.Println(m[1]) // > 4
-fmt.Println(m[2]) // > 4
+fmt.Println(m[2]) // > 3
 ```
