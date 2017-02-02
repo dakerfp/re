@@ -48,6 +48,13 @@ func Alphanum() *syntax.Regexp {
 	}
 }
 
+func Range(rang ...rune) *syntax.Regexp {
+	return &syntax.Regexp{
+		Op:   syntax.OpCharClass,
+		Rune: rang,
+	}
+}
+
 func Word() *syntax.Regexp {
 	return &syntax.Regexp{
 		Op:  syntax.OpPlus,

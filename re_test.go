@@ -185,6 +185,22 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
+			Regex(Range('a','m')),
+			regexp.MustCompile("[a-m]"),
+			[]testcase{
+				{"", false},
+				{"a", true},
+				{"aa", true},
+				{"\na", true},
+				{"b", true},
+				{"i", true},
+				{"m", true},
+				{"n", false},
+				{"z", false},
+				{"0", false},
+			},
+		},
+		{
 			Regex(
 				Group("dividend", Digits()),
 				Then("/"),
