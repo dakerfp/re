@@ -6,9 +6,9 @@ import (
 )
 
 var (
-	digits         = []rune("0123456789")
-	lowercaseAlpha = []rune("abcdefghijklmnopqrstuvxywz")
-	uppercaseAlpha = []rune("ABCDEFGHIJKLMNOPQRSTUVXYWZ")
+	digits         = []rune("09")
+	lowercaseAlpha = []rune("az")
+	uppercaseAlpha = []rune("AZ")
 	alpha          = append(uppercaseAlpha, lowercaseAlpha...)
 	alphanum       = append(alpha, digits...)
 )
