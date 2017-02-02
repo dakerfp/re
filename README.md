@@ -1,7 +1,7 @@
 Easy Regular Expressions for Golang
 ===================================
 
-This module is inspired on a similar project for [[javascript|https://github.com/VerbalExpressions/JSVerbalExpressions]].
+This module is inspired in a similar project for [javascript](https://github.com/VerbalExpressions/JSVerbalExpressions).
 
 
 Example:
@@ -10,6 +10,7 @@ Example:
 import (
 	. "github.com/dakerfp/re"
 )
+
 re := Regex(
 	Group("dividend", Digits()),
 	Then("/"),
