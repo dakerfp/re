@@ -1,4 +1,4 @@
-package easy
+package re
 
 import (
 	"regexp"
