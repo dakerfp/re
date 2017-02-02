@@ -1,5 +1,5 @@
-Easy Regular Expressions for Golang
-===================================
+Golang Regular Expressions for Humans
+=====================================
 
 This module is inspired in a similar project for [javascript](https://github.com/VerbalExpressions/JSVerbalExpressions).
 
