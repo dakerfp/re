@@ -178,6 +178,22 @@ func TestRegex(t *testing.T) {
 				{"-/9", false},
 			},
 		},
+		{
+			Regex(
+				Then("a"),
+				Maybe(Digit()),
+			),
+			regexp.MustCompile("a[0-9]?"),
+			[]testcase{
+				{"", false},
+				{"a", true},
+				{"a1", true},
+				{"a2", true},
+				{"a0", true},
+				{"11", false},
+				{"1", false},
+			},
+		},
 	}
 
 	for _, td := range testdata {

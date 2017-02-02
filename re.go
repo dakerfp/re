@@ -71,6 +71,15 @@ func Repeat(times int, sub ...*syntax.Regexp) *syntax.Regexp {
 	}
 }
 
+func Maybe(sub ...*syntax.Regexp) *syntax.Regexp {
+	return &syntax.Regexp{
+		Op:  syntax.OpRepeat,
+		Min: 0,
+		Max: 1,
+		Sub: sub,
+	}
+}
+
 func Max(times int, sub ...*syntax.Regexp) *syntax.Regexp {
 	return &syntax.Regexp{
 		Op:  syntax.OpRepeat,
