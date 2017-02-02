@@ -118,7 +118,7 @@ func CompileRegex(subs ...*syntax.Regexp) (*regexp.Regexp, error) {
 		Sub: subs,
 	}
 	re = re.Simplify()
-	return regexp.Compile(re.String())
+	return regexp.Compile(re.String()) // see https://github.com/golang/go/issues/18888]
 }
 
 func Regex(subs ...*syntax.Regexp) *regexp.Regexp {
