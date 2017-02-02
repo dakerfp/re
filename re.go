@@ -114,6 +114,18 @@ func Group(name string, sub ...*syntax.Regexp) *syntax.Regexp {
 	}
 }
 
+func StartOfLine() *syntax.Regexp {
+	return &syntax.Regexp{
+		Op:  syntax.OpBeginLine,
+	}
+}
+
+func EndOfLine() *syntax.Regexp {
+	return &syntax.Regexp{
+		Op:  syntax.OpEndLine,
+	}
+}
+
 func CompileRegex(subs ...*syntax.Regexp) (*regexp.Regexp, error) {
 	capIdx := 0
 	for _, sub := range subs {
