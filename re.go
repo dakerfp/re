@@ -116,13 +116,25 @@ func Group(name string, sub ...*syntax.Regexp) *syntax.Regexp {
 
 func StartOfLine() *syntax.Regexp {
 	return &syntax.Regexp{
-		Op:  syntax.OpBeginLine,
+		Op: syntax.OpBeginLine,
 	}
 }
 
 func EndOfLine() *syntax.Regexp {
 	return &syntax.Regexp{
-		Op:  syntax.OpEndLine,
+		Op: syntax.OpEndLine,
+	}
+}
+
+func StartOfText() *syntax.Regexp {
+	return &syntax.Regexp{
+		Op: syntax.OpBeginText,
+	}
+}
+
+func EndOfText() *syntax.Regexp {
+	return &syntax.Regexp{
+		Op: syntax.OpEndText,
 	}
 }
 

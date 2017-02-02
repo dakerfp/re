@@ -170,6 +170,21 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
+			Regex(StartOfText(), Digits(), EndOfText()),
+			regexp.MustCompile("\\A[0-9]+\\z"),
+			[]testcase{
+				{"", false},
+				{"1234567890", true},
+				{"1", true},
+				{" 123", false},
+				{"123 ", false},
+				{"abc\n123\nxyz", false},
+				{"123\n", false},
+				{"\n123", false},
+				{"1x1", false},
+			},
+		},
+		{
 			Regex(
 				Group("dividend", Digits()),
 				Then("/"),
