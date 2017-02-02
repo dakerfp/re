@@ -18,7 +18,7 @@ func TestRegex(t *testing.T) {
 	}{
 		{
 			Regex(Digit()),
-			regexp.MustCompile("\\d"),
+			regexp.MustCompile("[0-9]"),
 			[]testcase{
 				{"0", true},
 				{"1", true},
@@ -34,7 +34,7 @@ func TestRegex(t *testing.T) {
 		},
 		{
 			Regex(Digits(), Then("."), Digits()),
-			regexp.MustCompile("\\d+\\.\\d+"),
+			regexp.MustCompile("[0-9]+\\.[0-9]+"),
 			[]testcase{
 				{"1320.0", true},
 				{"2.1", true},
@@ -47,7 +47,7 @@ func TestRegex(t *testing.T) {
 		},
 		{
 			Regex(Digits(), Period(), Digits()),
-			regexp.MustCompile("\\d+\\.\\d+"),
+			regexp.MustCompile("[0-9]+\\.[0-9]+"),
 			[]testcase{
 				{"1320.0", true},
 				{"2.1", true},
@@ -72,9 +72,10 @@ func TestRegex(t *testing.T) {
 				{"lazy", true},
 				{"dog", true},
 				{"a", true},
-				/// {"zzzz", true},
+				{"zzzz", true},
 				{"", false},
-				{"999", false},
+				{"abc999", true},
+				{"999", true},
 				{"----", false},
 				{"", false},
 			},
@@ -92,36 +93,6 @@ func TestRegex(t *testing.T) {
 				{"  $999 USD ", false},
 			},
 		},
-		// {
-		// 	Regex(BeginText(), Then("abc")), // XXX
-		// 	regexp.MustCompile("$abc"),
-		// 	[]testcase{
-		// 		{"abc", true},
-		// 		{"abcd", true},
-		// 		{"abcd\nabcd", false},
-		// 		{"\nabcd", false},
-		// 		{"aabcd", false},
-		// 		{"ab", false},
-		// 		{" abcd", false},
-		// 		{"", false},
-		// 		{"", true}, // XXX
-		// 	},
-		// },
-		// {
-		// 	Regex(BeginLine(), Then("abc")), // XXX
-		// 	regexp.MustCompile("$abc"),
-		// 	[]testcase{
-		// 		{"abc", true},
-		// 		{"abcd", true},
-		// 		{"acv\nabcd", true},
-		// 		{"\nabcd", true},
-		// 		{"aabcd", false},
-		// 		{"ab", false},
-		// 		{" abcd", false},
-		// 		{"  \nabcd", false},
-		// 		{"", false},
-		// 	},
-		// },
 		{
 			Regex(Repeat(3, Then("a")), Then("b")),
 			regexp.MustCompile("aaab"),
@@ -202,16 +173,14 @@ func TestRegex(t *testing.T) {
 }
 
 func TestRegexGroups(t *testing.T) {
-	return //
-
 	type testcase struct {
-		str       string
-		doesMatch bool
-		matches   []string
+		str     string
+		matches []string
 	}
 
 	testdata := []struct {
 		re        *regexp.Regexp
+		ref       *regexp.Regexp
 		testcases []testcase
 	}{
 		{
@@ -220,44 +189,49 @@ func TestRegexGroups(t *testing.T) {
 				Then("/"),
 				Group("divisor", Digits()),
 			),
+			regexp.MustCompile("(\\d+)\\.(\\d+)"),
 			[]testcase{
-				{"", false, nil},
-				{"1", false, nil},
-				{"/", false, nil},
-				{"1/", false, nil},
-				{"1/2", true, []string{"1", "2"}},
-				{"99/9", true, []string{"99", "9"}},
-				{"91231239/1231231239", true, []string{"91231239", "1231231239"}},
-				{"-91231239/1231231239", true, []string{"91231239", "1231231239"}},
-				{"+91231239/1231231239", true, []string{"91231239", "1231231239"}},
-				{" +91231239/1231231239", true, []string{"91231239", "1231231239"}},
-				{" +/2", false, nil},
-				{"-/9", false, nil},
+				{"", nil},
+				{"1", nil},
+				{"/", nil},
+				{"1/", nil},
+				{"1/2", []string{"1/2", "1", "2"}},
+				{"99/9", []string{"99/9", "99", "9"}},
+				{"91231239/1231231239", []string{"91231239/1231231239", "91231239", "1231231239"}},
+				{"-91231239/1231231239", []string{"91231239/1231231239", "91231239", "1231231239"}},
+				{"+91231239/1231231239", []string{"91231239/1231231239", "91231239", "1231231239"}},
+				{" +321/765", []string{"321/765", "321", "765"}},
+				{" +/2", nil},
+				{"-/9", nil},
+			},
+		},
+		{
+			Regex(
+				Group("user", Word()),
+				Then("@"),
+				Group("domain", Word()),
+			),
+			regexp.MustCompile("(\\w+)@(\\w+)"),
+			[]testcase{
+				{"foo-bar.com", nil},
+				{"foo@bar", []string{"foo@bar", "foo", "bar"}},
+				{"foo@bar.com", []string{"foo@bar", "foo", "bar"}},
 			},
 		},
 	}
 
 	for _, td := range testdata {
 		t.Run(td.re.String(), func(t *testing.T) {
-			t.Log(td.re.String)
 			for _, tc := range td.testcases {
 				t.Run(tc.str, func(t *testing.T) {
-					if td.re.MatchString(tc.str) != tc.doesMatch {
-						t.Fail()
-					}
-
-					if !tc.doesMatch {
-						return
-					}
-
 					submatches := td.re.FindSubmatch([]byte(tc.str))
-					if len(submatches) == 0 || len(submatches) != len(tc.matches) {
-						t.Fatal(submatches)
+					if len(submatches) != len(tc.matches) {
+						t.Fatal(submatches, len(submatches))
 					}
 
 					for i := range submatches {
 						if string(submatches[i]) != tc.matches[i] {
-							t.Fatal(submatches[i], tc.matches[i])
+							t.Fatal(string(submatches[i]), tc.matches[i])
 						}
 					}
 				})

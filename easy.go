@@ -7,7 +7,10 @@ import (
 
 var (
 	digits         = []rune("0123456789")
-	lowercaseAlpha = []rune("abcdefghijklmnopqrtuvxywz")
+	lowercaseAlpha = []rune("abcdefghijklmnopqrstuvxywz")
+	uppercaseAlpha = []rune("ABCDEFGHIJKLMNOPQRSTUVXYWZ")
+	alpha          = append(uppercaseAlpha, lowercaseAlpha...)
+	alphanum       = append(alpha, digits...)
 )
 
 func Digit() *syntax.Regexp {
@@ -19,7 +22,7 @@ func Digit() *syntax.Regexp {
 
 func Period() *syntax.Regexp {
 	return &syntax.Regexp{
-		Op:   syntax.OpCharClass,
+		Op:   syntax.OpLiteral,
 		Rune: []rune{'.'},
 	}
 }
@@ -34,26 +37,21 @@ func Digits() *syntax.Regexp {
 func Alpha() *syntax.Regexp {
 	return &syntax.Regexp{
 		Op:   syntax.OpCharClass,
-		Rune: lowercaseAlpha,
+		Rune: alpha,
+	}
+}
+
+func Alphanum() *syntax.Regexp {
+	return &syntax.Regexp{
+		Op:   syntax.OpCharClass,
+		Rune: alphanum,
 	}
 }
 
 func Word() *syntax.Regexp {
 	return &syntax.Regexp{
 		Op:  syntax.OpPlus,
-		Sub: []*syntax.Regexp{Alpha()},
-	}
-}
-
-func BeginText() *syntax.Regexp {
-	return &syntax.Regexp{
-		Op: syntax.OpBeginText,
-	}
-}
-
-func BeginLine() *syntax.Regexp {
-	return &syntax.Regexp{
-		Op: syntax.OpBeginText,
+		Sub: []*syntax.Regexp{Alphanum()},
 	}
 }
 
@@ -108,6 +106,13 @@ func Group(name string, sub ...*syntax.Regexp) *syntax.Regexp {
 }
 
 func CompileRegex(subs ...*syntax.Regexp) (*regexp.Regexp, error) {
+	capIdx := 0
+	for _, sub := range subs {
+		if sub.Op == syntax.OpCapture {
+			sub.Cap = capIdx
+			capIdx++
+		}
+	}
 	re := &syntax.Regexp{
 		Op:  syntax.OpConcat,
 		Sub: subs,
@@ -117,13 +122,7 @@ func CompileRegex(subs ...*syntax.Regexp) (*regexp.Regexp, error) {
 }
 
 func Regex(subs ...*syntax.Regexp) *regexp.Regexp {
-	capIdx := 0
-	for _, sub := range subs {
-		if sub.Op == syntax.OpCapture {
-			sub.Cap = capIdx
-			capIdx++
-		}
-	}
+
 	re, err := CompileRegex(subs...)
 	if err != nil {
 		panic(err)
