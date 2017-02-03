@@ -224,6 +224,25 @@ func TestRegex(t *testing.T) {
 		},
 		{
 			Regex(
+				StartOfLine(),
+				Then("http"),
+				Maybe("s"),
+				Then("://"),
+				Maybe("www"),
+				AtLeastOne(AnythingBut(' ')),
+				EndOfLine(),
+			),
+			regexp.MustCompile("^http[s]?://(www)?[^\\ ]+$"),
+			[]testcase{
+				{"", false},
+				{"http://www.google.com", true},
+				{"https://www.google.com", true},
+				{"https://www.google .com", false},
+				{"ftp://www.google .com", false},
+			},
+		},
+		{
+			Regex(
 				Then("a"),
 				Maybe(Digit()),
 			),
