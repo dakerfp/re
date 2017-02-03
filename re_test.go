@@ -257,6 +257,38 @@ func TestRegex(t *testing.T) {
 				{"1", false},
 			},
 		},
+		{
+			Regex(
+				Lowercase(),
+			),
+			regexp.MustCompile("[a-z]"),
+			[]testcase{
+				{"", false},
+				{"A", false},
+				{"B", false},
+				{"Z", false},
+				{"a", true},
+				{"b", true},
+				{"z", true},
+				{"1", false},
+			},
+		},
+		{
+			Regex(
+				Uppercase(),
+			),
+			regexp.MustCompile("[A-Z]"),
+			[]testcase{
+				{"", false},
+				{"A", true},
+				{"B", true},
+				{"Z", true},
+				{"a", false},
+				{"b", false},
+				{"z", false},
+				{"1", false},
+			},
+		},
 	}
 
 	for _, td := range testdata {

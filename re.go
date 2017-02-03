@@ -128,6 +128,20 @@ func Digits() *syntax.Regexp {
 	}
 }
 
+func Lowercase() *syntax.Regexp {
+	return &syntax.Regexp{
+		Op:   syntax.OpCharClass,
+		Rune: lowercaseAlpha,
+	}
+}
+
+func Uppercase() *syntax.Regexp {
+	return &syntax.Regexp{
+		Op:   syntax.OpCharClass,
+		Rune: uppercaseAlpha,
+	}
+}
+
 func Alpha() *syntax.Regexp {
 	return &syntax.Regexp{
 		Op:   syntax.OpCharClass,
