@@ -49,3 +49,18 @@ which corresponds to
 ```golang
 regexp.MustCompile("^http[s]?://(www)?[^\\ ]+$"),
 ```
+
+Contributing
+------------
+
+Fill issues for discussions and request, pull request for
+fixes and new features.
+License is Apache 2.0.
+
+
+TODO List
+---------
+
+* Create Docs
+* Validate API
+* Add more tests
