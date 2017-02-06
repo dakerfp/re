@@ -17,7 +17,7 @@ func TestRegex(t *testing.T) {
 		testcases []testcase
 	}{
 		{
-			Regex(Digit()),
+			Regex(Digit),
 			regexp.MustCompile("[0-9]"),
 			[]testcase{
 				{"0", true},
@@ -33,7 +33,7 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
-			Regex(Digits(), Then("."), Digits()),
+			Regex(Digits, Then("."), Digits),
 			regexp.MustCompile("[0-9]+\\.[0-9]+"),
 			[]testcase{
 				{"1320.0", true},
@@ -46,7 +46,7 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
-			Regex(Digits(), Period(), Digits()),
+			Regex(Digits, Period, Digits),
 			regexp.MustCompile("[0-9]+\\.[0-9]+"),
 			[]testcase{
 				{"1320.0", true},
@@ -59,7 +59,7 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
-			Regex(Word()),
+			Regex(Word),
 			regexp.MustCompile("\\w+"),
 			[]testcase{
 				{"the quick brown fox jumps over the lazy dog", true},
@@ -81,7 +81,7 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
-			Regex(Then("$"), Digits(), Then("USD")),
+			Regex(Then("$"), Digits, Then("USD")),
 			regexp.MustCompile("\\$\\d+USD"),
 			[]testcase{
 				{"$123USD", true},
@@ -132,7 +132,7 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
-			Regex(Or(Digit(), Alpha())),
+			Regex(Or(Digit, Alpha)),
 			regexp.MustCompile("[A-Za-z]|[0-9]"),
 			[]testcase{
 				{"", false},
@@ -157,7 +157,7 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
-			Regex(StartOfLine(), Digits(), EndOfLine()),
+			Regex(StartOfLine, Digits, EndOfLine),
 			regexp.MustCompilePOSIX("^[0-9]+$"),
 			[]testcase{
 				{"", false},
@@ -170,7 +170,7 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
-			Regex(StartOfText(), Digits(), EndOfText()),
+			Regex(StartOfText, Digits, EndOfText),
 			regexp.MustCompile("\\A[0-9]+\\z"),
 			[]testcase{
 				{"", false},
@@ -185,7 +185,7 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
-			Regex(Range('a','m')),
+			Regex(Range('a', 'm')),
 			regexp.MustCompile("[a-m]"),
 			[]testcase{
 				{"", false},
@@ -202,9 +202,9 @@ func TestRegex(t *testing.T) {
 		},
 		{
 			Regex(
-				Group("dividend", Digits()),
+				Group("dividend", Digits),
 				Then("/"),
-				Group("divisor", Digits()),
+				Group("divisor", Digits),
 			),
 			regexp.MustCompile("(\\d+)/(\\d+)"),
 			[]testcase{
@@ -224,13 +224,13 @@ func TestRegex(t *testing.T) {
 		},
 		{
 			Regex(
-				StartOfLine(),
+				StartOfLine,
 				Then("http"),
 				Maybe("s"),
 				Then("://"),
 				Maybe("www"),
 				AtLeastOne(AnythingBut(' ')),
-				EndOfLine(),
+				EndOfLine,
 			),
 			regexp.MustCompile("^http[s]?://(www)?[^\\ ]+$"),
 			[]testcase{
@@ -244,7 +244,7 @@ func TestRegex(t *testing.T) {
 		{
 			Regex(
 				Then("a"),
-				Maybe(Digit()),
+				Maybe(Digit),
 			),
 			regexp.MustCompile("a[0-9]?"),
 			[]testcase{
@@ -258,9 +258,7 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
-			Regex(
-				Lowercase(),
-			),
+			Regex(Lowercase),
 			regexp.MustCompile("[a-z]"),
 			[]testcase{
 				{"", false},
@@ -274,9 +272,7 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
-			Regex(
-				Uppercase(),
-			),
+			Regex(Uppercase),
 			regexp.MustCompile("[A-Z]"),
 			[]testcase{
 				{"", false},
@@ -321,9 +317,9 @@ func TestRegexGroups(t *testing.T) {
 	}{
 		{
 			Regex(
-				Group("dividend", Digits()),
+				Group("dividend", Digits),
 				Then("/"),
-				Group("divisor", Digits()),
+				Group("divisor", Digits),
 			),
 			regexp.MustCompile("(\\d+)\\.(\\d+)"),
 			[]testcase{
@@ -343,9 +339,9 @@ func TestRegexGroups(t *testing.T) {
 		},
 		{
 			Regex(
-				Group("user", Word()),
+				Group("user", Word),
 				Then("@"),
-				Group("domain", Word()),
+				Group("domain", Word),
 			),
 			regexp.MustCompile("(\\w+)@(\\w+)"),
 			[]testcase{

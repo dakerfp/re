@@ -1,9 +1,9 @@
 package re
 
 import (
-	"unicode"
 	"regexp"
 	"regexp/syntax"
+	"unicode"
 )
 
 var (
@@ -106,64 +106,58 @@ func negateClass(r []rune) []rune {
 	return r
 }
 
-
-func Digit() *syntax.Regexp {
-	return &syntax.Regexp{
+var (
+	StartOfLine = &syntax.Regexp{
+		Op: syntax.OpBeginLine,
+	}
+	EndOfLine = &syntax.Regexp{
+		Op: syntax.OpEndLine,
+	}
+	StartOfText = &syntax.Regexp{
+		Op: syntax.OpBeginText,
+	}
+	EndOfText = &syntax.Regexp{
+		Op: syntax.OpEndText,
+	}
+	Digit = &syntax.Regexp{
 		Op:   syntax.OpCharClass,
 		Rune: digits,
 	}
-}
-
-func Period() *syntax.Regexp {
-	return &syntax.Regexp{
+	Period = &syntax.Regexp{
 		Op:   syntax.OpLiteral,
 		Rune: []rune{'.'},
 	}
-}
-
-func Digits() *syntax.Regexp {
-	return &syntax.Regexp{
+	Digits = &syntax.Regexp{
 		Op:  syntax.OpPlus,
-		Sub: []*syntax.Regexp{Digit()},
+		Sub: []*syntax.Regexp{Digit},
 	}
-}
-
-func Lowercase() *syntax.Regexp {
-	return &syntax.Regexp{
+	Lowercase = &syntax.Regexp{
 		Op:   syntax.OpCharClass,
 		Rune: lowercaseAlpha,
 	}
-}
-
-func Uppercase() *syntax.Regexp {
-	return &syntax.Regexp{
+	Uppercase = &syntax.Regexp{
 		Op:   syntax.OpCharClass,
 		Rune: uppercaseAlpha,
 	}
-}
-
-func Alpha() *syntax.Regexp {
-	return &syntax.Regexp{
+	Alpha = &syntax.Regexp{
 		Op:   syntax.OpCharClass,
 		Rune: alpha,
 	}
-}
-
-func Alphanum() *syntax.Regexp {
-	return &syntax.Regexp{
+	Alphanum = &syntax.Regexp{
 		Op:   syntax.OpCharClass,
 		Rune: alphanum,
 	}
-}
-
-func Anything() *syntax.Regexp {
-	return &syntax.Regexp{
-		Op:   syntax.OpAnyChar,
+	Anything = &syntax.Regexp{
+		Op: syntax.OpAnyChar,
 	}
-}
+	Word = &syntax.Regexp{
+		Op:  syntax.OpPlus,
+		Sub: []*syntax.Regexp{Alphanum},
+	}
+)
 
 func AnythingBut(args ...rune) *syntax.Regexp {
-	if n := len(args); n % 2 == 1 {
+	if n := len(args); n%2 == 1 {
 		args = append(args, args[n-1])
 	}
 	neg := negateClass(appendClass(nil, args))
@@ -177,13 +171,6 @@ func Range(rng ...rune) *syntax.Regexp {
 	return &syntax.Regexp{
 		Op:   syntax.OpCharClass,
 		Rune: appendClass(nil, rng),
-	}
-}
-
-func Word() *syntax.Regexp {
-	return &syntax.Regexp{
-		Op:  syntax.OpPlus,
-		Sub: []*syntax.Regexp{Alphanum()},
 	}
 }
 
@@ -251,27 +238,10 @@ func Group(name string, sub ...*syntax.Regexp) *syntax.Regexp {
 	}
 }
 
-func StartOfLine() *syntax.Regexp {
+func Sequence(subs ...*syntax.Regexp) *syntax.Regexp {
 	return &syntax.Regexp{
-		Op: syntax.OpBeginLine,
-	}
-}
-
-func EndOfLine() *syntax.Regexp {
-	return &syntax.Regexp{
-		Op: syntax.OpEndLine,
-	}
-}
-
-func StartOfText() *syntax.Regexp {
-	return &syntax.Regexp{
-		Op: syntax.OpBeginText,
-	}
-}
-
-func EndOfText() *syntax.Regexp {
-	return &syntax.Regexp{
-		Op: syntax.OpEndText,
+		Op:  syntax.OpConcat,
+		Sub: subs,
 	}
 }
 

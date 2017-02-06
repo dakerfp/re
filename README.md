@@ -12,9 +12,9 @@ import (
 )
 
 re := Regex(
-	Group("dividend", Digits()),
+	Group("dividend", Digits),
 	Then("/"),
-	Group("divisor", Digits()),
+	Group("divisor", Digits),
 )
 
 m = re.FindSubmatch("4/3")
@@ -33,14 +33,16 @@ which is far more cryptic.
 Another good example is the following regex (limited) to parse URLs:
 
 ```golang
-re := Regex(
-	StartOfLine(),
+import . "github.com/dakerfp/re"
+
+re := re.Regex(
+	StartOfLine,
 	Then("http"),
 	Maybe("s"),
 	Then("://"),
 	Maybe("www"),
 	AtLeastOne(AnythingBut(' ')),
-	EndOfLine(),
+	EndOfLine,
 )
 ```
 
