@@ -12,6 +12,7 @@ var (
 	uppercaseAlpha = []rune("AZ")
 	alpha          = append(uppercaseAlpha, lowercaseAlpha...)
 	alphanum       = append(alpha, digits...)
+	whitespaces    = []rune("  \t\t\n\n")
 )
 
 func toSyntax(args ...interface{}) []*syntax.Regexp {
@@ -153,6 +154,19 @@ var (
 	Word = &syntax.Regexp{
 		Op:  syntax.OpPlus,
 		Sub: []*syntax.Regexp{Alphanum},
+	}
+	Newline = &syntax.Regexp{
+		Op:   syntax.OpLiteral,
+		Rune: []rune("\n"),
+	}
+	Whitespace = &syntax.Regexp{
+		Op: syntax.OpPlus,
+		Sub: []*syntax.Regexp{
+			&syntax.Regexp{
+				Op:   syntax.OpCharClass,
+				Rune: whitespaces,
+			},
+		},
 	}
 )
 

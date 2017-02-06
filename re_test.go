@@ -285,6 +285,34 @@ func TestRegex(t *testing.T) {
 				{"1", false},
 			},
 		},
+		{
+			Regex(Newline),
+			regexp.MustCompile("\n"),
+			[]testcase{
+				{"", false},
+				{`
+				 `, true},
+				{" ", false},
+				{"\n", true},
+				{"\t", false},
+				{"  \n ", true},
+			},
+		},
+		{
+			Regex(StartOfText, Whitespace, EndOfText),
+			regexp.MustCompile("^[\n\t\\ ]+$"),
+			[]testcase{
+				{"", false},
+				{" ", true},
+				{"\n", true},
+				{"\t", true},
+				{"   ", true},
+				{" \n ", true},
+				{"   \n \t \n   \t  ", true},
+				{"   a   ", false},
+				{"\n\t\n\t\t\n\n", true},
+			},
+		},
 	}
 
 	for _, td := range testdata {
