@@ -206,8 +206,13 @@ func Repeat(times int, sub ...*syntax.Regexp) *syntax.Regexp {
 
 func Maybe(sub ...interface{}) *syntax.Regexp {
 	return &syntax.Regexp{
-		Op:  syntax.OpQuest,
-		Sub: toSyntax(sub...),
+		Op: syntax.OpQuest,
+		Sub: []*syntax.Regexp{
+			&syntax.Regexp{
+				Op:  syntax.OpConcat,
+				Sub: toSyntax(sub...),
+			},
+		},
 	}
 }
 
