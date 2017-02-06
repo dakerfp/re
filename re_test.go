@@ -132,7 +132,7 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
-			Regex(Or(Digit, Alpha)),
+			Regex(Either(Digit, Alpha)),
 			regexp.MustCompile("[A-Za-z]|[0-9]"),
 			[]testcase{
 				{"", false},
@@ -146,7 +146,7 @@ func TestRegex(t *testing.T) {
 			},
 		},
 		{
-			Regex(Or(Then("aaa"), Then("bbb"))),
+			Regex(Either("aaa", "bbb")),
 			regexp.MustCompile("(aaa)|(bbb)"),
 			[]testcase{
 				{"", false},

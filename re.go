@@ -239,10 +239,10 @@ func Min(times int, sub ...*syntax.Regexp) *syntax.Regexp {
 	}
 }
 
-func Or(sub ...*syntax.Regexp) *syntax.Regexp {
+func Either(sub ...interface{}) *syntax.Regexp {
 	return &syntax.Regexp{
 		Op:  syntax.OpAlternate,
-		Sub: sub,
+		Sub: toSyntax(sub...),
 	}
 }
 
